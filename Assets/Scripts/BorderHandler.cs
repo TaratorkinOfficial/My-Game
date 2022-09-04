@@ -5,8 +5,8 @@ using UnityEngine;
 public class BorderHandler : MonoBehaviour
 {
     static Plane plane;
-    [HideInInspector] public GameObject leftBorder;
-    [HideInInspector] public GameObject rightBorder;
+    public GameObject leftBorder;
+    public GameObject rightBorder;
     [HideInInspector] public Vector2 upBorderPoint;
     [HideInInspector] public Vector2 downBorderPoint;
     [HideInInspector] public Vector2 rightTop;

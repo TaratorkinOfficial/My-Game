@@ -13,6 +13,7 @@ TagManager:
   - BasketRing
   - star
   - border
+  - firstSkin
   layers:
   - Default
   - TransparentFX

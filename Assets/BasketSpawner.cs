@@ -27,7 +27,7 @@ public class BasketSpawner : MonoBehaviour
         _borderHandler = gameObject.GetComponentInParent<BorderHandler>();
 
         _leftP = _borderHandler.leftBorder.transform.localPosition;
-        _rightP = _borderHandler.rightBorder.transform.position;
+        _rightP = _borderHandler.rightBorder.transform.localPosition;
         _upP = _borderHandler.upBorderPoint;
         _downP = _borderHandler.downBorderPoint;
         var offsetX = Vector2.Distance(_leftP, _rightP)/3.5f;

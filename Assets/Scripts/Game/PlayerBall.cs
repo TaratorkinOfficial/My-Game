@@ -10,14 +10,17 @@ public class PlayerBall : MonoBehaviour
     private CircleCollider2D col;
     private Vector3 _posBaskcur;
     private Vector3 _posBaskprev;
+    private Vector3 _posBaskpZero;
     private int _scoreSustr;
     private int _score;
+    private int _stars;
     private Transform _border;
     private string _announText;
     [SerializeField] private ProgressManager progressManager;
     [SerializeField] private BasketSpawner basketSpawner;
     [SerializeField] private CinemachineVirtualCamera cam;
     [SerializeField] private GameObject fingerMove;
+    [SerializeField] private AudioManager audioManager;
     [HideInInspector] public UiController uiController;
     [HideInInspector] public bool isFlying;
     [HideInInspector] public LookAtFinger lookAtFinger;
@@ -39,6 +42,7 @@ public class PlayerBall : MonoBehaviour
     {
         await Task.Delay(500);
         _posBaskprev = basketSpawner.basketSpawn[0].transform.position;
+        _posBaskpZero = basketSpawner.basketSpawn[0].transform.position;
         gameObject.transform.position = new Vector2(_posBaskprev.x, _posBaskprev.y + 1.5f);
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
         fingerMove.transform.position = new Vector2(_posBaskprev.x - .5f, _posBaskprev.y - 1.8f);
@@ -73,23 +77,51 @@ public class PlayerBall : MonoBehaviour
                     basketSpawner.PointsOfset();
                     progressManager.AddScore(_score);
                     _border.position = new Vector3(0, transform.position.y, 0);
-                    if (_scoreSustr == 1) _announText = "+ " + _scoreSustr.ToString();
-                    else _announText = "PERFECT + " + _scoreSustr.ToString();
+                    if (_scoreSustr == 1)
+                    {
+                        audioManager.PlayAudioSourse("inBasketWithCollisSound");
+                        _announText = "+ " + _scoreSustr.ToString();
+                    }
+                    else
+                    {
+                        audioManager.PlayAudioSourse("inBasketWithOutCollisSound");
+                        _announText = "PERFECT + " + _scoreSustr.ToString();
+                    }
                     uiController.AnnounceActivate(_announText, _posBaskcur);
                     busketController.SetGrayBasketring();
                 }
                 busketController.BlenderAnim(2.5f);
+                busketController.BlenderAnim(0f);
                 break;
             case "death":
-                gameObject.tag = "dead";
-                cam.Follow = null;
-                uiController.Lose();
+                if (_posBaskcur== _posBaskpZero)
+                {
+                    Begin();
+                    PreparePulling();
+                }
+                else
+                {
+                    gameObject.tag = "dead";
+                    cam.Follow = null;
+                    uiController.Lose();
+                    audioManager.PlayAudioSourse("loseSound");
+                }
                 break;
             case "lowBasket":
                 busketController.BlenderAnim(-2.5f);
                 break;
             case "BasketRing":
                 _scoreSustr = 0;
+                audioManager.PlayAudioSourse("collisionSound");
+                break;
+            case "star":
+                _stars += 1;
+                progressManager.AddStars(_stars);
+                audioManager.PlayAudioSourse("starSound");
+                Destroy(col);
+                break;
+            case "border":
+                if(!CompareTag("dead")) audioManager.PlayAudioSourse("collisionSound");
                 break;
         }
     }
@@ -99,12 +131,12 @@ public class PlayerBall : MonoBehaviour
         {
             case "pullPoint":
                 Pulling();
+                
                 break;
         }
     }
     private async void PreparePulling()
     {
-        uiController.LogoGameActive();
         await Task.Delay(500);
         isFlying = false;
         DesactivateRb();
@@ -112,17 +144,18 @@ public class PlayerBall : MonoBehaviour
     }
     private void Pulling()
     {
+        audioManager.PlayAudioSourse("outBasketSound");
         isFlying = true;
         ActivateRb();
         print(isFlying);
     }
     public void DesactivateRb()
     {
-        //rb.velocity = Vector3.zero;
-        //rb.angularVelocity = 0f;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = 0f;
         //Destroy(rb);
         //gameObject.transform.SetParent(busketController.GetComponent<Transform>());
-        
+
         //rb.isKinematic = true;
     }
 }

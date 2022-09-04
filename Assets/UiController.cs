@@ -4,12 +4,12 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.SceneManagement;
 
 public class UiController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI textScore;
-    [SerializeField] private TextMeshProUGUI textStars;
-    [SerializeField] private GameObject logoGame;
     [SerializeField] private GameObject CanvasTextAnnoun;
     [SerializeField] private Image ImageBackSettings;
     [SerializeField] private Sprite NightOn;
@@ -17,22 +17,24 @@ public class UiController : MonoBehaviour
     [SerializeField] private Toggle _soundMode;
     [SerializeField] private Toggle _nightMode;
     [SerializeField] private Toggle _nightMode1;
-    [SerializeField] private GameObject buttonSetNlight;
-    [SerializeField] private GameObject buttonSetNRest;
-    [SerializeField] private GameObject textBesScore;
     [SerializeField] private TextMeshProUGUI _textBesScore;
+    [SerializeField] private TextMeshProUGUI _textStars;
     [SerializeField] private GameObject fingerMove;
+    [SerializeField] private GameObject backCustStartGame;
     private CanvasAnnounHendler _canvasAnnounHendler;
-    
     private int i;
     private int j;
+    public GameObject startGamePanel;
+    public GameObject inGamePanel;
+    public GameObject loseGamePanel;
     private void Awake()
     {
         if (PlayerPrefs.GetInt("StaticInts") == 0) SaveStaticInts();
     }
     void Start()
     {
-        //_textBesScore = textBesScore.GetComponent<TextMeshProUGUI>();
+        _textBesScore.text = PlayerPrefs.GetInt("score").ToString();
+        _textStars.text = PlayerPrefs.GetInt("stars").ToString();
         _canvasAnnounHendler = CanvasTextAnnoun.GetComponent<CanvasAnnounHendler>();
         i = PlayerPrefs.GetInt("night");
         // NightMode
@@ -40,7 +42,6 @@ public class UiController : MonoBehaviour
         else _nightMode.isOn = false;
         if (i == -1) _nightMode1.isOn = false;
         else _nightMode1.isOn = true;
-
         // SoundMode
         j = PlayerPrefs.GetInt("sound");
         if (j > 0) _soundMode.isOn = true;
@@ -48,8 +49,10 @@ public class UiController : MonoBehaviour
     }
     public void StartsGame()
     {
-        buttonSetNlight.SetActive(false);
         fingerMove.SetActive(false);
+        startGamePanel.SetActive(false);
+        inGamePanel.SetActive(true);
+        backCustStartGame.SetActive(false);
     }
 
     #region NightMode Saves SoundMode
@@ -58,42 +61,42 @@ public class UiController : MonoBehaviour
         PlayerPrefs.SetInt("StaticInts", 1);
         PlayerPrefs.SetInt("sound", 1);
         PlayerPrefs.SetInt("night", -1);
-        print("sdaw");
     }
     public void NightSwitch(bool isOn)
     {
-        if (isOn)
-        {
-            if (_nightMode.isOn == true) _nightMode1.isOn = false;
-            ImageBackSettings.sprite = NightOn;
-            print("on");
-            PlayerPrefs.SetInt("night", -1);
-        }
-        else
-        {
-            if (_nightMode.isOn == false) _nightMode1.isOn = true;
-            ImageBackSettings.sprite = NightOff;
-            print("off");
-            PlayerPrefs.SetInt("night", 1);
-        }
+            if (isOn)
+            {
+                if (_nightMode.isOn == true) _nightMode1.isOn = false;
+                ImageBackSettings.sprite = NightOn;
+                print("on");
+                PlayerPrefs.SetInt("night", -1);
+            }
+            else
+            {
+                if (_nightMode.isOn == false) _nightMode1.isOn = true;
+                ImageBackSettings.sprite = NightOff;
+                print("off");
+                PlayerPrefs.SetInt("night", 1);
+            }
     }
     public void NightSwitch1(bool isOn)
     {
-        if (isOn)
-        {
-            if (_nightMode1.isOn == true) _nightMode.isOn = false;
-            //if (_test1.isOn == true) _test1.isOn = false;
-            ImageBackSettings.sprite = NightOff;
-            print("off");
-        }
-        else
-        {
-            if (_nightMode1.isOn == false) _nightMode.isOn = true;
-            //if (_test1.isOn == false) _test1.isOn = true;
-            ImageBackSettings.sprite = NightOn;
-            print("on");
+  
+            if (isOn)
+            {
+                if (_nightMode1.isOn == true) _nightMode.isOn = false;
+                //if (_test1.isOn == true) _test1.isOn = false;
+                ImageBackSettings.sprite = NightOff;
+                print("off");
 
-        }
+            }
+            else
+            {
+                if (_nightMode1.isOn == false) _nightMode.isOn = true;
+                //if (_test1.isOn == false) _test1.isOn = true;
+                ImageBackSettings.sprite = NightOn;
+                print("on");
+            }
     }
     public void SoundMode()
     {
@@ -131,18 +134,24 @@ public class UiController : MonoBehaviour
     }
     public void UpdateStars(int stars)
     {
-        textStars.text = stars.ToString();
+        _textStars.text = stars.ToString();
         
     }
     public void Lose()
     {
-        textBesScore.SetActive(true);
-        buttonSetNRest.SetActive(true);
+        _textBesScore.text = PlayerPrefs.GetInt("score").ToString();
+        loseGamePanel.SetActive(true);
+        inGamePanel.GetComponentInChildren<Image>().gameObject.SetActive(false);
     }
-    public void LogoGameActive()
+    public void HideSprites(int sortOrder)
     {
-        logoGame.SetActive(false);
+        gameObject.GetComponent<Canvas>().sortingOrder = sortOrder;
     }
+    public void RestartGame ()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     void Update()
     {
         

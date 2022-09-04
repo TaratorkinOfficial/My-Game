@@ -6,7 +6,7 @@ public class ProgressManager : MonoBehaviour
 {
     private int score;
     private int stars;
-    [HideInInspector] public UiController uiController;
+    public UiController uiController;
     private int _scoreSav;
     private int _starsSav;
     private bool _once;
@@ -20,33 +20,32 @@ public class ProgressManager : MonoBehaviour
         score = 0;
         uiController.UpdateScore(score, _scoreSav);
         uiController.UpdateStars(stars);
-        //_score = score;
-        //_stars = stars;
     }
     public void AddScore(int _score)
     {
         score = _score;
-        _scoreSav = score;
-        uiController.UpdateScore(score, _scoreSav);
+        uiController.UpdateScore(score, PlayerPrefs.GetInt("score"));
         if(_scoreSav<score&& !_once)
         {
             scoreVFX.Play();
             _once = true;
         }
+        if(_scoreSav < score)
+        {
+            _scoreSav = score;
+            SaveProgress();
+        }
     }
     public void AddStars(int _stars)
     {
-        stars += _stars;
+        stars = PlayerPrefs.GetInt("stars")+ _stars;
         uiController.UpdateStars(stars);
+        SaveProgress();
     }
     public void SaveProgress()
     {
         PlayerPrefs.SetInt("score", _scoreSav);
         PlayerPrefs.SetInt("stars", stars);
-    }
-    void Update()
-    {
-        
     }
     private void OnApplicationPause(bool pause)
     {

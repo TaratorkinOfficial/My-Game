@@ -5930,8 +5930,8 @@ MonoBehaviour:
   - {fileID: 7715647955754148605}
   - {fileID: 7715647954930003960}
   m_Bounds:
-    m_Center: {x: -0.0805707, y: -0.038135767, z: 0}
-    m_Extent: {x: 2.7005892, y: 1.7762063, z: 0}
+    m_Center: {x: -0.0805707, y: -0.038134813, z: 0}
+    m_Extent: {x: 2.7005892, y: 1.776207, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
 --- !u!1 &7715647956686960854
@@ -6006,6 +6006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _disapVFX: {fileID: 3529541396782888390}
+  star: {fileID: 2685918992388765284}
   _rings:
   - {fileID: 7715647955231395085}
   - {fileID: 7715647955084524606}
