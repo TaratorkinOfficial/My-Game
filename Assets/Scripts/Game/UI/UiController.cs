@@ -27,6 +27,7 @@ public class UiController : MonoBehaviour
     public GameObject startGamePanel;
     public GameObject inGamePanel;
     public GameObject loseGamePanel;
+    public GameObject pauseGamePanel;
     private void Awake()
     {
         if (PlayerPrefs.GetInt("StaticInts") == 0) SaveStaticInts();
@@ -119,7 +120,8 @@ public class UiController : MonoBehaviour
     {
         if (pause)
         {
-            
+            //pauseGamePanel.SetActive(true);
+
         }
     }
     public void AnnounceActivate(string text, Vector2 pos)

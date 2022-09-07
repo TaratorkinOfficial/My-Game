@@ -8695,6 +8695,7 @@ MonoBehaviour:
   startGamePanel: {fileID: 948450310}
   inGamePanel: {fileID: 177916727}
   loseGamePanel: {fileID: 2101871049}
+  pauseGamePanel: {fileID: 898439878}
 --- !u!114 &1446543186
 MonoBehaviour:
   m_ObjectHideFlags: 0
